@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Языки программирования</h3>
+    <div>Python</div>
+    <div>C</div>
+    <div><a href="#">Java</a></div>
+    <h3>История создания</h3>
+    <div>
+        <p>C разработан в 1969–1973 годах сотрудником Bell Labs Деннисом Ритчи.</p>
+        <p>JavaScript разработан в 1996 году, автор - американский программист Брендан Айк.</p>
+        <p>Prolog разработан в 1972 году, автор - французский программист Ален Колмероэ.</p>
+        <p>Python создан в 1989–1991 годах голландским программистом Гвидо ван Россумом.</p>
+        <p>Java разработан в 1990–1996 годах канадским программистом Джеймсом Гослингом.</p>
+        <p>Ruby разработан в 1993-1995 годах, автор - японский программист Юкихиро Мацумото.</p>
+    </div>
+    <input type="number" id="maxLen">
+    <button onclick="changePage()">Выполнить</button>
+
+    <script>
+        function changePage() {
+            const n = document.getElementById('maxLen').value;
+            const paragraphs = document.querySelectorAll('p');
+
+            paragraphs.forEach(p => {
+                const text = p.textContent; 
+
+                if (text.length > n) {
+
+                    let spaceIndex = text.lastIndexOf(' ', n);
+                    console.log(spaceIndex)
+
+      
+                    if (spaceIndex === -1) {
+                        spaceIndex = 0
+                    }
+
+                    const visible = text.slice(0, spaceIndex);
+                    const hidden = text.slice(spaceIndex);
+
+                    const span = document.createElement('span');
+                    span.className = 'hide';
+                    span.textContent = hidden;
+
+
+                    p.innerHTML = `${visible}<span class="hide">${hidden}</span>...`;
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

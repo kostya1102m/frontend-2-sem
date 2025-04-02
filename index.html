@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор равнобедренного треугольника</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .error-input {
+            border-color: #dc3545;
+        }
+        .error-text {
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4 w-50 justify-content-center">
+        <div class="mb-3">
+            <div class="form-check">
+                <h4 class="form-check-label p-md-0">Входные данные:</h4>
+                <input class="form-check-input" type="radio" name="inputType" id="sideAngle" value="sideAngle" checked>
+                <label class="form-check-label" for="sideAngle">Боковая сторона и угол при основании</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="inputType" id="baseAngle" value="baseAngle">
+                <label class="form-check-label" for="baseAngle">Основание и противолежащий угол</label>
+            </div>
+            <button class="btn btn-primary mt-2" id="showBtn">Показать</button>
+        </div>
+
+        <div class="mb-3">
+            <img id="triangleImg" src="1.png" class="img-fluid" alt="Triangle">
+        </div>
+
+        <div id="inputFields" class="mb-3">
+            <div class="mb-3">
+                <label for="input1" class="form-label" id="label1">Боковая сторона:</label>
+                <input type="number" class="form-control" id="input1" step="0.1" min="0">
+                <div id="error1" class="error-text"></div>
+            </div>
+            <div class="mb-3">
+                <label for="input2" class="form-label" id="label2">Угол при основании (градусы):</label>
+                <input type="number" class="form-control" id="input2" step="0.1">
+                <div id="error2" class="error-text"></div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <h5>Вычислить:</h5>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="perimeter" value="perimeter">
+                <label class="form-check-label" for="perimeter">Периметр</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="medians" value="medians">
+                <label class="form-check-label" for="medians">Медианы</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="unknownSides" value="unknownSides">
+                <label class="form-check-label" for="unknownSides">Неизвестные стороны</label>
+            </div>
+            <div id="error3" class="error-text"></div>
+        </div>
+
+        <div class="mb-3">
+            <button class="btn btn-success me-2" id="calculateBtn">Вычислить</button>
+            <button class="btn btn-secondary" id="clearBtn">Очистить</button>
+        </div>
+        
+
+        <div id="results" class="result-box"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const showBtn = document.getElementById('showBtn');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const inputTypeRadios = document.querySelectorAll('input[name="inputType"]');
+            const img = document.getElementById('triangleImg');
+            const input1 = document.getElementById('input1');
+            const input2 = document.getElementById('input2');
+            const label1 = document.getElementById('label1');
+            const label2 = document.getElementById('label2');
+            const error1 = document.getElementById('error1');
+            const error2 = document.getElementById('error2');
+            const error3 = document.getElementById('error3');
+            const perimeter = document.getElementById('perimeter');
+            const medians = document.getElementById('medians');
+            const unknownSides = document.getElementById('unknownSides');
+            const results = document.getElementById('results');
+
+    
+            showBtn.addEventListener('click', () => {
+                const selectedType = document.querySelector('input[name="inputType"]:checked').value;
+                if (selectedType === 'sideAngle') {
+                    label1.textContent = 'Боковая сторона:';
+                    label2.textContent = 'Угол при основании (градусы):';
+                    img.src = '1.png';
+                } else {
+                    label1.textContent = 'Основание:';
+                    label2.textContent = 'Противолежащий угол (градусы):';
+                    img.src = '2.png';
+                }
+                clearInputs();
+            });
+
+            input1.addEventListener('click', () => 
+            {
+                clearErrors1();
+            });
+            input2.addEventListener('click', () => 
+            {
+                clearErrors2();
+            });
+            perimeter.addEventListener('click', () => 
+            {
+                clearErrors3();
+            });
+            medians.addEventListener('click', () => 
+            {
+                clearErrors3();
+            });
+            unknownSides.addEventListener('click', () => 
+            {
+                clearErrors3();
+            });
+            
+            calculateBtn.addEventListener('click', () => {
+                clearErrors1();
+                clearErrors2();
+                const selectedType = document.querySelector('input[name="inputType"]:checked').value;
+                const val1 = parseFloat(input1.value);
+                const val2 = parseFloat(input2.value);
+                let hasError = false;
+
+                // Валидация
+                if (isNaN(val1) || val1 <= 0) {
+                    input1.classList.add('error-input');
+                    error1.textContent = 'Введите положительное число';
+                    hasError = true;
+                }
+                if (isNaN(val2) || val2 <= 0 || val2 >= 180) {
+                    input2.classList.add('error-input');
+                    error2.textContent = 'Введите угол от 0 до 180 градусов';
+                    hasError = true;
+                }
+                if (!perimeter.checked && !medians.checked && !unknownSides.checked) {
+                    hasError = true;
+                    perimeter.classList.add('error-input');
+                    medians.classList.add('error-input');
+                    unknownSides.classList.add('error-input');
+                    error3.textContent = 'Выберите характеристики для вычисления';
+
+                    //results.innerHTML = 'Выберите характеристики для вычисления';
+                }
+            
+
+                if (hasError) return;
+
+                // Расчеты
+                let perim, medianToBase, medianToSide, base, side;
+                const resultsArr = [];
+
+                if (selectedType === 'sideAngle') {
+                    side = val1;
+                    const baseAngle = val2 * Math.PI / 180;
+                    base = 2 * side * Math.cos(baseAngle);
+                    if (base <= 0) {
+                        error1.textContent = 'Невозможный треугольник';
+                        return;
+                    }
+                } else {
+                    base = val1;
+                    const vertexAngle = val2 * Math.PI / 180;
+                    side = base * (Math.cos(vertexAngle/2) / Math.sin(vertexAngle));
+                    if (side <= 0) {
+                        error1.textContent = 'Невозможный треугольник';
+                        return;
+                    }
+                }
+
+                if (document.getElementById('perimeter').checked) {
+                    perim = 2 * side + base;
+                    resultsArr.push(`Периметр: ${perim.toFixed(2)}`);
+                }
+
+                if (document.getElementById('medians').checked) {
+                    const height = side * Math.sqrt(1 - (base/(2*side))**2);
+                    medianToBase = Math.sqrt(2*side*side + base*base/4)/2;
+                    medianToSide = Math.sqrt(2*base*base + side*side)/2;
+                    resultsArr.push(`Медиана к основанию: ${medianToBase.toFixed(2)}`);
+                    resultsArr.push(`Медиана к боковой стороне: ${medianToSide.toFixed(2)}`);
+                }
+
+                if (document.getElementById('unknownSides').checked) {
+                    if (selectedType === 'sideAngle') {
+                        resultsArr.push(`Основание: ${base.toFixed(2)}`);
+                    } else {
+                        resultsArr.push(`Боковая сторона: ${side.toFixed(2)}`);
+                    }
+                }
+
+                results.innerHTML = resultsArr.length > 0 ? `<h5>Результат:</h5>` + resultsArr.join('<br>') : 'Выберите характеристики для вычисления';
+            });
+
+            // Обработчик кнопки "Очистить"
+            clearBtn.addEventListener('click', clearInputs);
+
+            function clearInputs() {
+                input1.value = '';
+                input2.value = '';
+                results.innerHTML = '';
+                perimeter.checked = false;
+                medians.checked = false;
+                unknownSides.checked = false;
+                clearErrors1();
+                clearErrors2();
+                clearErrors3();
+            }
+
+            function clearErrors1() {
+                input1.classList.remove('error-input');
+                error1.textContent = '';
+            }
+            function clearErrors2() {
+                input2.classList.remove('error-input');
+                error2.textContent = '';
+            }
+            function clearErrors3() {
+                perimeter.classList.remove('error-input');
+                medians.classList.remove('error-input');
+                unknownSides.classList.remove('error-input');
+                error3.textContent = '';
+            }
+        });
+    </script>
+</body>
+</html>
