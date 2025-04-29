@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список миллиардеров</title>
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <script src="static/js/data.js"></script>
+    <script src="static/js/main.js"></script>
+    <script src="static/js/table.js"></script>
+    <script src="static/js/filter.js"></script>
+    <script src="static/js/sort.js"></script>
+    <script src="static/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <nav class="navbar navbar-expand-md bg-light navbar-light">
+            <a href="index.html" class="navbar-brand ms-lg-5">Самые богатые люди</a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse ms-lg-5" id="menu">
+                <ul class="navbar-nav justify-content-center">
+                    <li class="nav-item">
+                        <a href="index.html" class="nav-link">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="data.html" class="nav-link active">Список миллиардеров</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Menu_3</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">Menu_4</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container py-3">
+        <!-- Filter Form -->
+        <form id="filter" class="border p-3 mb-3">
+            <h5 class="mb-3 text-center">Фильтры</h5>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="name" class="form-label">Имя:</label>
+                    <input type="text" class="form-control" id="name">
+                </div>
+                <div class="col-md-6">
+                    <label for="country" class="form-label">Страна:</label>
+                    <input type="text" class="form-control" id="country">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="source" class="form-label">Источник доходов:</label>
+                    <input type="text" class="form-control" id="source">
+                </div>
+                <div class="col-md-6">
+                    <label for="industry" class="form-label">Индустрия:</label>
+                    <input type="text" class="form-control" id="industry">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="assetsFrom" class="form-label">Стоимость чистых активов (млрд USD):</label>
+                    <div class="input-group">
+                        <span class="input-group-text">от</span>
+                        <input type="number" class="form-control" id="assetsFrom"
+                            min="33" max="233">
+                        <span class="input-group-text">до</span>
+                        <input type="number" class="form-control" id="assetsTo"
+                            min="33" max="233">
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="ageFrom" class="form-label">Возраст:</label>
+                    <div class="input-group">
+                        <span class="input-group-text">от</span>
+                        <input type="number" class="form-control" id="ageFrom"
+                            min="31" max="95">
+                        <span class="input-group-text">до</span>
+                        <input type="number" class="form-control" id="ageTo"
+                            min="31" max="95">
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="positionFrom" class="form-label">Позиция в Forbes:</label>
+                    <div class="input-group">
+                        <span class="input-group-text">от</span>
+                        <input type="number" class="form-control" id="positionFrom"
+                            min="1" max="50">
+                        <span class="input-group-text">до</span>
+                        <input type="number" class="form-control" id="positionTo"
+                            min="1" max="50">
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center gap-2">
+                <input type="button" value="Найти" id="findBtn" class="btn btn-primary">
+                <input type="button" value="Очистить фильтры" id="clearBtn" class="btn btn-secondary">
+            </div>
+        </form>
+
+        <!-- Sort Form -->
+        <form id="sort" class="border p-3 mb-3">
+            <h5 class="mb-3 text-center">Сортировать по</h5>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="fieldsFirst" class="form-label">Первый уровень:</label>
+                    <div class="input-group">
+                        <select id="fieldsFirst" class="form-select"></select>
+                        <div class="input-group-text">
+                            <input type="checkbox" id="fieldsFirstDesc">
+                            <label for="fieldsFirstDesc" class="ms-1">по убыванию</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="fieldsSecond" class="form-label">Второй уровень:</label>
+                    <div class="input-group">
+                        <select id="fieldsSecond" class="form-select"></select>
+                        <div class="input-group-text">
+                            <input type="checkbox" id="fieldsSecondDesc">
+                            <label for="fieldsSecondDesc" class="ms-1">по убыванию</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <label for="fieldsThird" class="form-label">Третий уровень:</label>
+                    <div class="input-group">
+                        <select id="fieldsThird" class="form-select"></select>
+                        <div class="input-group-text">
+                            <input type="checkbox" id="fieldsThirdDesc">
+                            <label for="fieldsThirdDesc" class="ms-1">по убыванию</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center gap-2">
+                <input type="button" value="Сортировать" id="sortBtn" class="btn btn-primary">
+                <input type="button" value="Сбросить сортировку" id="resetSortBtn" class="btn btn-secondary">
+            </div>
+        </form>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table id="list" class="table table-bordered table-hover text-center">
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-4 border-top text-muted py-2 text-center">
+            © Михайлов К. Н, Б9122-09.03.04(4), 2024-2025
+            <span class="float-end">✉ Контакты</span>
+        </footer>
+    </main>
+</body>
+</html>
