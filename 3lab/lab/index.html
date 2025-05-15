@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Анимация по отзеркаленной синусоидальной траектории</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    #settings {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 300px;
+    }
+    svg {
+      border: 1px solid #ccc;
+      width: 600px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <form id="settings">
+      <p>
+        <label for="duration">Время анимации (сек): </label>
+        <input type="number" id="duration" value="5" min="1" max="20">
+      </p>
+      <p><b>Масштаб</b><br>
+        <label for="scaleStart">Начальный: </label>
+        <input type="number" id="scaleStart" value="1" step="0.1" min="0.1" max="5"><br>
+        <label for="scaleEnd">Конечный: </label>
+        <input type="number" id="scaleEnd" value="0.5" step="0.1" min="0.1" max="5">
+      </p>
+      <p><b>Поворот</b><br>
+        <label for="rotateEnd">Конечный угол (градусы): </label>
+        <input type="number" id="rotateEnd" value="360" min="-720" max="720">
+      </p>
+      <p>
+        <input type="button" value="Анимировать" id="animateButton">
+        <input type="button" value="Очистить" id="clearButton">
+      </p>
+    </form>
+    <svg id="canvas"></svg>
+  </main>
+
+  <script>
+    const svg = d3.select("#canvas")
+      .attr("width", 600)
+      .attr("height", 600);
+
+    // Создаём группу для рисунка
+    const g = svg.append("g")
+      .attr("id", "drawing");
+
+    // Рисунок из 6 графических примитивов
+    // 1. Круг (основной элемент)
+    g.append("circle")
+      .attr("cx", 0)
+      .attr("cy", 0)
+      .attr("r", 20)
+      .attr("fill", "red");
+
+    // 2. Звезда
+    const starPoints = [
+      [0, -30], [10, -10], [30, -10], [15, 5], [20, 25],
+      [0, 15], [-20, 25], [-15, 5], [-30, -10], [-10, -10]
+    ];
+    g.append("polygon")
+      .attr("points", starPoints.map(p => p.join(",")).join(" "))
+      .attr("fill", "yellow");
+
+    // 3. Линия 1
+    g.append("line")
+      .attr("x1", -20)
+      .attr("y1", -20)
+      .attr("x2", 20)
+      .attr("y2", 20)
+      .attr("stroke", "blue")
+      .attr("stroke-width", 2);
+
+    // 4. Линия 2
+    g.append("line")
+      .attr("x1", 20)
+      .attr("y1", -20)
+      .attr("x2", -20)
+      .attr("y2", 20)
+      .attr("stroke", "blue")
+      .attr("stroke-width", 2);
+
+    // 5. Треугольник
+    g.append("polygon")
+      .attr("points", "0,-40 -20,-60 20,-60")
+      .attr("fill", "green");
+
+    // 6. Прямоугольник
+    g.append("rect")
+      .attr("x", -15)
+      .attr("y", 20)
+      .attr("width", 30)
+      .attr("height", 15)
+      .attr("fill", "purple");
+
+    // Начальная позиция рисунка
+    g.attr("transform", "translate(300, 500)");
+
+    const amplitude = 100;     // Ширина колебаний (по X)
+    const frequency = 4;       // Число волн
+    const startY = 100;        // Начальная точка по Y
+    const endY = 500;          // Конечная точка по Y
+    const centerX = 300;       // Центральная линия по X
+
+    const pathData = [];
+    const steps = 1000;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const y = endY - t * (endY - startY); // Прогресс по Y (снизу вверх)
+      const x = centerX - amplitude * Math.sin(2 * Math.PI * frequency * t); // Отражённая синусоида по X
+      pathData.push([x, y]);
+    }
+
+    // Визуализируем траекторию
+    const line = d3.line()
+      .x(d => d[0]) // X координата
+      .y(d => d[1]); // Y координата
+
+    svg.append("path")
+      .attr("d", line(pathData))
+      .attr("fill", "none")
+      .attr("stroke", "blue")
+      .attr("stroke-width", 2);
+
+    // Обработчик кнопки "Анимировать"
+    document.getElementById("animateButton").addEventListener("click", () => {
+      const duration = parseFloat(document.getElementById("duration").value) * 1000;
+      const scaleStart = parseFloat(document.getElementById("scaleStart").value);
+      const scaleEnd = parseFloat(document.getElementById("scaleEnd").value);
+      const rotateEnd = parseFloat(document.getElementById("rotateEnd").value);
+
+      g.interrupt(); // Очищаем предыдущую анимацию
+
+      // Начальное положение
+      g.attr("transform", `translate(${pathData[0][0]}, ${pathData[0][1]}) scale(${scaleStart}) rotate(0)`);
+
+      // Анимация
+      g.transition()
+        .duration(duration)
+        .ease(d3.easeLinear)
+        .attrTween("transform", () => t => {
+          const index = Math.floor(t * (pathData.length - 1));
+          const [x, y] = pathData[index];
+          const scale = scaleStart + t * (scaleEnd - scaleStart);
+          const rotate = rotateEnd ? t * rotateEnd : 0;
+          return `translate(${x}, ${y}) scale(${scale}) rotate(${rotate})`;
+        });
+    });
+
+    // Обработчик кнопки "Очистить"
+    document.getElementById("clearButton").addEventListener("click", () => {
+      g.interrupt(); // Останавливаем анимацию
+      g.attr("transform", "translate(300, 100) scale(1) rotate(0)"); // Сброс
+    });
+  </script>
+</body>
+</html>
