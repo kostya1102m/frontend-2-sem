@@ -1,0 +1,43 @@
+#build {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    border-collapse: collapse;
+    width: 70%;
+}
+
+#build th, #build td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+}
+
+#build th {
+    background-color: #f5f5f5;
+}
+
+#build tr:hover {
+    background-color: #f0f0f0;
+}
+  
+  #build tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+.error {
+    display: block;
+    margin-bottom: 10px;
+}
+
+
+svg {
+    width: 800px;
+    height: 400px;
+}
+svg text {
+    font: 8px Verdana;
+}
+svg path {
+    fill: none;
+    stroke: #333333;
+    width: 1px;
+}
