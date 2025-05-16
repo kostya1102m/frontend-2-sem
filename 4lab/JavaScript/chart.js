@@ -20,6 +20,8 @@ function drawGraph(data) {
     // Получаем выбранное пользователем значение по оси X (например, "Страна" или "Год")
     let keyX =  d3.select('input[name="ox"]:checked').node().value;
 
+    console.log(keyX);
+
     // Строим массив значений для графика
     const arrGraph = createArrGraph(data, keyX);
     

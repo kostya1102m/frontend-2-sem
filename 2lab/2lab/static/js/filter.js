@@ -1,4 +1,4 @@
-
+let tableData = billioners;
 let correspond = {
     "Имя": "name",
     "Страна": "country",
@@ -60,6 +60,7 @@ let filterTable = (data, idTable, dataForm) => {
     });
 
     clearTable(idTable);
+    tableData = tableFilter;
     createTable(tableFilter, idTable);
 };
 
@@ -72,5 +73,6 @@ let clearFilter = (idTable, originalData, dataForm) => {
     }
 
     clearTable(idTable);
+    tableData = originalData;
     createTable(originalData, idTable);
 };
