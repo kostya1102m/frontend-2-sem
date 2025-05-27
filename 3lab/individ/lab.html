@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Languages</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <h1>История создания языков программирования</h1>
+    <div class="content">
+        <p>Python создан в 1989-1991 годах голландским программистом Гвидо ван Россумом.</p>
+        <p>C разработан в 1969-1973 годах сотрудником Bell Labs Деннисом Ритчи.</p>
+        <p>Java разработан в 1990-1996 годах канадским программистом Джеймсом Гослингом.</p>
+        <p>JavaScript разработан в 1996 году, автор американский программист Брендан Айк.</p>
+        <p>Prolog разработан в 1972 году, автор французский программист Ален Колмероэ.</p>
+        <p>Ruby разработан в 1993-1995 годах, автор японский программист Юкихиро Мацумото.</p>
+    </div>
+    <p id="text"></p>
+    <h2>История создания по годам</h2>
+    <button id="extractButton">Жамкай</button>
+
+    <script>
+        d3.select("#extractButton").on("click", function () {
+            const list = d3.selectAll(".content p")
+                .nodes()
+                .map(node => node.textContent.split(" ")[0]);
+
+            d3.select("#text")
+                .selectAll("a")
+                .data(list)
+                .enter()
+                .append("a")
+                .attr("href", "#")
+                .text(d => d);
+        });
+    </script>
+</body>
+</html>

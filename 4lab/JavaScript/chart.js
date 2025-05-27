@@ -26,15 +26,16 @@ function drawGraph(data) {
     const arrGraph = createArrGraph(data, keyX);
     
     // Очищаем SVG перед новой отрисовкой
-    let svg = d3.select("svg")  
+    let svg = d3.select("svg").
+        style("overflow", "visible");
     svg.selectAll('*').remove();
 
     // Определяем размеры и отступы области графика
     attr_area = {
         width: parseFloat(svg.style('width')),
         height: parseFloat(svg.style('height')),
-        marginX: 50,
-        marginY: 50
+        marginX: 40,
+        marginY: 40
    }
 
    // Создаем оси и получаем шкалы преобразования
@@ -47,7 +48,6 @@ function drawGraph(data) {
    createChartDot(svg, arrGraph, scX, scY, attr_area, "red");
 }
 
-// Функция создания осей и шкал преобразования
 function createAxis(svg, data, attr_area){
     // Определяем минимальное и максимальное значение по оси Y
     let  [min, max] = d3.extent(data.map(d => d.values[1]));
@@ -73,7 +73,9 @@ function createAxis(svg, data, attr_area){
                    .range([attr_area.height - 2 * attr_area.marginY, 0]);               
     
     // Создание и отрисовка осей
+    console.log(scaleX)
     let axisX = d3.axisBottom(scaleX); 
+    console.log(axisX)
     let axisY = d3.axisLeft(scaleY); 
 
     svg.append("g")
@@ -94,8 +96,8 @@ function createAxis(svg, data, attr_area){
 
 // Функция создания гистограммы
 function createChartGist(svg, data, scaleX, scaleY, attr_area, color) {
-    let check1 = d3.select("#check1").node().checked; // чекбокс "макс"
-    let check2 = d3.select("#check2").node().checked; // чекбокс "мин"
+    let check1 = d3.select("#check1").property("checked");
+    let check2 = d3.select("#check2").property("checked");
 
     // Если оба чекбокса включены, рисуем оба столбца
     if(check1 && check2 ){
@@ -112,8 +114,8 @@ function createChartGist(svg, data, scaleX, scaleY, attr_area, color) {
 
 // Функция создания точечной диаграммы
 function createChartDot(svg, data, scaleX, scaleY, attr_area, color) {
-    let check1 = d3.select("#check1").node().checked;
-    let check2 = d3.select("#check2").node().checked;
+    let check1 = d3.select("#check1").property("checked");
+    let check2 = d3.select("#check2").property("checked");
 
     if(check1 && check2){
         createDot(svg, data, scaleX,  attr_area, "red", d => scaleY(d.values[1]), 1);
@@ -153,5 +155,5 @@ function createGist(svg, data, scaleX, scaleY, attr_area, color, value, shift = 
        .attr("y2", scaleY.range()[0]) // основание линии
        .attr("transform", `translate(${attr_area.marginX}, ${attr_area.marginY})`)
        .attr("stroke", color)
-       .attr("stroke-width", 10);
+       .attr("stroke-width", 20);
 }

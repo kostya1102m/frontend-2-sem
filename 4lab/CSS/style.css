@@ -1,43 +1,46 @@
 #build {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
+    font: 14px Arial, sans-serif;
     border-collapse: collapse;
     width: 70%;
+    margin: 0 auto;
 }
 
-#build th, #build td {
+#build th,
+#build td {
     border: 1px solid #ddd;
     padding: 6px;
     text-align: left;
 }
-
-#build th {
-    background-color: #f5f5f5;
+#data{
+    width: 70%;
+    margin: 0 auto;
 }
-
-#build tr:hover {
-    background-color: #f0f0f0;
+#but{
+    width: 70%;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    margin-top:50px;
 }
-  
-  #build tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
 .error {
     display: block;
     margin-bottom: 10px;
+    color: red;
+    text-align: center;
 }
-
 
 svg {
-    width: 800px;
-    height: 400px;
+    display: block;
+    width: 900px;
+    height: 600px;
+    margin: 0 auto;
 }
+
 svg text {
     font: 8px Verdana;
 }
+
 svg path {
     fill: none;
-    stroke: #333333;
-    width: 1px;
+    stroke: #333;
+    stroke-width: 1px;
 }
