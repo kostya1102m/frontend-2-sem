@@ -23,9 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function clearError() {
         d3.select("#error-message").text("").style("color", "");
-        d3.selectAll("#check1, #check2").each(function () {
-            d3.select(this.parentNode).style("color", "");
-        });
+        d3.select("#l1check").style("color", "");
+        d3.select("#l2check").style("color", "");
     }
 
     d3.select("#draw").on("click", function () {
@@ -36,10 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
             d3.select("#error-message")
                 .text("Выберите хотя бы один чекбокс")
                 .style("color", "red");
-            d3.selectAll("#check1, #check2")
-                .each(function () {
-                    d3.select(this.parentNode).style("color", "red");
-                })
+            d3.select("#l1check").style("color", check1 ? "" : "red");
+            d3.select("#l2check").style("color", check2 ? "" : "red");
         } else {
             clearError();
             drawGraph(buildings);
