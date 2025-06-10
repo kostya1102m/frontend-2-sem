@@ -1,47 +1,38 @@
 // Функция создает массив данных для графика
 function createArrGraph(data, key) {
-    console.log(key)
-    // Группируем данные по значению ключа
     groupObj = d3.group(data, d => d[key]);
 
     let arrGraph = [];
     // Перебираем каждую группу
     for (let entry of groupObj) {
-        // Получаем минимум и максимум
         let minMax = d3.extent(entry[1].map(d => d['Стоимость чистых активов (млрд USD)']));
-        // Добавляем результат в массив
         arrGraph.push({ labelX: entry[0], values: minMax });
     }
     console.table(arrGraph);
-    return arrGraph; // Возвращаем подготовленные данные
+    return arrGraph;
 }
 
 // Основная функция отрисовки графика
 function draw(data) {
-    // Получаем выбранное пользователем значение по оси X (например, "Индустрия" или "Страна")
-    let keyX = d3.select('input[name="ox"]:checked').node().value;
-    console.log(keyX, "dsadsa")
+    let keyX = d3.select('input[name="ox"]:checked').property("value");
 
-    // Строим массив значений для графика
     const arrGraph = createArrGraph(data, keyX);
 
-    // Очищаем SVG перед новой отрисовкой
     let svg = d3.select("svg")
     svg.selectAll('*').remove();
 
-    // Определяем размеры и отступы области графика
     attr_area = {
         width: parseFloat(svg.style('width')),
         height: parseFloat(svg.style('height')),
-        marginX: 50,
-        marginY: 50
+        marginX: 100,
+        marginY: 100
     }
 
     // Создаем оси и получаем шкалы преобразования
     const [scX, scY] = createAxis(svg, arrGraph, attr_area);
 
     // Определяем тип графика (гистограмма или точки)
-    let sel = d3.select("#visualizationType").node().value;
+    let sel = d3.select("#visualizationType").property("value");
     if (sel == "scatter")
         createChartDot(svg, arrGraph, scX, scY, attr_area, "red");
     else if (sel == "bar")
@@ -56,7 +47,7 @@ function createAxis(svg, data, attr_area) {
     let [min, max] = d3.extent(data.map(d => d.values[1]));
 
     // Получаем ключ по оси X
-    let keyX = d3.select('input[name="ox"]:checked').node().value;
+    let keyX = d3.select('input[name="ox"]:checked').property("value");
 
     // Шкала для оси X
     let scaleX = d3.scaleBand()
@@ -90,13 +81,13 @@ function createAxis(svg, data, attr_area) {
 
 // Функция создания гистограммы
 function createChartGist(svg, data, scaleX, scaleY, attr_area, color) {
-    let check1 = d3.select("#resMax").node().checked; // чекбокс "макс"
-    let check2 = d3.select("#resMin").node().checked; // чекбокс "мин"
+    let check1 = d3.select("#resMax").property("checked");
+    let check2 = d3.select("#resMin").property("checked");
 
     // Если оба чекбокса включены, рисуем оба столбца
     if (check1 && check2) {
         createGist(svg, data, scaleX, scaleY, attr_area, "red", d => scaleY(d.values[1]), 1);
-        createGist(svg, data, scaleX, scaleY, attr_area, "blue", d => scaleY(d.values[0]), -1);
+        createGist(svg, data, scaleX, scaleY, attr_area, "blue", d => scaleY(d.values[0]), 4);
     }
     else if (check1) {
         createGist(svg, data, scaleX, scaleY, attr_area, "red", d => scaleY(d.values[1]));
@@ -108,8 +99,8 @@ function createChartGist(svg, data, scaleX, scaleY, attr_area, color) {
 
 // Функция создания точечной диаграммы
 function createChartDot(svg, data, scaleX, scaleY, attr_area, color) {
-    let check1 = d3.select("#resMax").node().checked;
-    let check2 = d3.select("#resMin").node().checked;
+    let check1 = d3.select("#resMax").property("checked");
+    let check2 = d3.select("#resMin").property("checked");
 
     if (check1 && check2) {
         createDot(svg, data, scaleX, attr_area, "red", d => scaleY(d.values[1]), 1);
@@ -125,16 +116,16 @@ function createChartDot(svg, data, scaleX, scaleY, attr_area, color) {
 
 // Функция создания линейного графика
 function createChartLine(svg, data, scaleX, scaleY, attr_area, color) {
-    let check1 = d3.select("#resMax").node().checked;
-    let check2 = d3.select("#resMin").node().checked;
+    let check1 = d3.select("#resMax").property("checked");
+    let check2 = d3.select("#resMin").property("checked");
 
     if (check1 && check2) {
         createCurve(svg, data, scaleX, scaleY, attr_area, "red", d => scaleY(d.values[1]), 1);
-        createCurve(svg, data, scaleX, scaleY, attr_area, "blue", d => scaleY(d.values[0]), -1);
+        createCurve(svg, data, scaleX, scaleY, attr_area, "blue", d => scaleY(d.values[0]), 1);
     } else if (check1) {
-        createCurve(svg, data, scaleX, scaleY, attr_area, "red", d => scaleY(d.values[1]));
+        createCurve(svg, data, scaleX, scaleY, attr_area, "red", d => scaleY(d.values[1]), 1);
     } else if (check2) {
-        createCurve(svg, data, scaleX, scaleY, attr_area, "blue", d => scaleY(d.values[0]));
+        createCurve(svg, data, scaleX, scaleY, attr_area, "blue", d => scaleY(d.values[0]), 1);
     }
 }
 

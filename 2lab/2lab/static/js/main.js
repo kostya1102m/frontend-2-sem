@@ -14,11 +14,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     findBtn.addEventListener('click', function () {
         filterTable(billioners, 'list', filterForm);
+        d3.select("svg").selectAll("*").remove();
         resetSortForm(sortForm);
     });
 
     clearBtn.addEventListener('click', function () {
         clearFilter('list', billioners, filterForm);
+        d3.select("svg").selectAll("*").remove();
         resetSortForm(sortForm);
     });
 
@@ -37,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     resetSortBtn.addEventListener('click', function () {
         resetSort('list', billioners, sortForm);
+        d3.select("svg").selectAll("*").remove();
         clearFilter('list', billioners, filterForm);
     });
 
@@ -55,49 +58,49 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     d3.select("#reset-graph").on("click", function () {
         d3.select("svg").selectAll("*").remove();
-        d3.select("#chart-message").node().style.display = "";
+        d3.select("#chart-message").property("style", "display: block;");
     })
 
     // Кнопка для построения графика
     let button2 = d3.select("#build-graph");
     button2.on("click", function () {
-        let check1 = d3.select("#resMax").node().checked;
-        let check2 = d3.select("#resMin").node().checked;
+        let check1 = d3.select("#resMax").property("checked");
+        let check2 = d3.select("#resMin").property("checked");
 
         if (!check1 && !check2) {
-            // Ни один чекбокс не выбран
             d3.select("#error-message")
                 .text("Выберите хотя бы один график для отображения!")
                 .style("color", "red");
-            d3.select("#resMax").node().parentElement.style.color = "red";
-            d3.select("#resMin").node().parentElement.style.color = "red";
+            d3.select("#labelMax").style("color", "red");
+            d3.select("#labelMin").style("color", "red");
+            d3.select("svg").selectAll("*").remove();
         } else {
-            // Хотя бы один чекбокс выбран
-            d3.select("#error-message").text(""); // Убираем сообщение об ошибке
-            d3.select("#resMax").node().parentElement.style.color = ""; // Убираем красный цвет
-            d3.select("#resMin").node().parentElement.style.color = ""; // Убираем красный цвет
-            d3.select("#chart-message").node().style.display = "none";
-            draw(tableData); // Строим график
+            clearErrors();
+            d3.select("#chart-message").property("style", "display: '';");
+            draw(tableData); 
+            d3.select("#chart-message").property("style", "display: none;");
         }
     });
 
-    // обработчики событий для автоматического снятия ошибок
+    
     d3.select("#resMax").on("change", function () {
-        if (d3.select("#resMax").node().checked || d3.select("#resMin").node().checked) {
-            d3.select("#error-message").text("");
-            d3.select("#resMax").node().parentElement.style.color = "";
-            d3.select("#resMin").node().parentElement.style.color = "";
+        if (d3.select("#resMax").property("checked") || d3.select("#resMin").property("checked")) {
+            clearErrors();
         }
     });
 
     d3.select("#resMin").on("change", function () {
-        if (d3.select("#resMax").node().checked || d3.select("#resMin").node().checked) {
-            d3.select("#error-message").text("");
-            d3.select("#resMax").node().parentElement.style.color = "";
-            d3.select("#resMin").node().parentElement.style.color = "";
+        if (d3.select("#resMax").property("checked") || d3.select("#resMin").property("checked")) {
+            clearErrors();
         }
     });
 });
+
+function clearErrors() {
+    d3.select("#error-message").text("");
+    d3.select("#labelMax").style("color", "");
+    d3.select("#labelMin").style("color", "");
+}
 
 let createOption = (str, val) => {
     let item = document.createElement('option');

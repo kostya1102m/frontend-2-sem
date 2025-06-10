@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     showTable('build', buildings);
 
-    // Кнопка для скрытия/показа таблицы
     let button = d3.select("#start");
     let clicked = false;
     button.on("click", function () {
@@ -22,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
     function clearError() {
-        d3.select("#error-message").text("").style("color", "");
+        d3.select("#error-message").text("");
         d3.select("#l1check").style("color", "");
         d3.select("#l2check").style("color", "");
     }
@@ -37,6 +36,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 .style("color", "red");
             d3.select("#l1check").style("color", check1 ? "" : "red");
             d3.select("#l2check").style("color", check2 ? "" : "red");
+            d3.select("svg").selectAll("*").remove();
+
         } else {
             clearError();
             drawGraph(buildings);
